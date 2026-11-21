@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=JClic WebApp Init
+Exec=jclic-webapp-init
+Terminal=false
+NoDisplay=true

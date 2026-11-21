@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+set -e
+
+CODENAME="jclic"
+ICE_DIR="${HOME}/.local/share/ice"
+FIREFOX_PROFILE="${ICE_DIR}/firefox/${CODENAME}"
+USER_APPS_DIR="${HOME}/.local/share/applications"
+USER_DESKTOP_FILE="${USER_APPS_DIR}/webapp-${CODENAME}.desktop"
+USER_ICONS_DIR="${ICE_DIR}/icons"
+
+mkdir -p "${USER_APPS_DIR}"
+mkdir -p "${FIREFOX_PROFILE}/chrome"
+mkdir -p "${USER_ICONS_DIR}"
+
+# Barre de titre système activée
+cat << 'EOF' > "${FIREFOX_PROFILE}/user.js"
+user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+user_pref("browser.tabs.inTitlebar", 0);
+user_pref("browser.tabs.warnOnClose", false);
+user_pref("browser.shell.checkDefaultBrowser", false);
+user_pref("browser.startup.page", 0);
+user_pref("browser.startup.homepage_override.mstone", "ignore");
+user_pref("security.fileuri.strict_origin_policy", false);
+EOF
+
+cat << 'EOF' > "${FIREFOX_PROFILE}/chrome/userChrome.css"
+#nav-bar,
+#identity-box,
+#TabsToolbar {
+    visibility: collapse !important;
+}
+EOF
+
+# Copie du raccourci WebApp Manager si non existant
+if [ ! -f "${USER_DESKTOP_FILE}" ] && [ -f "/usr/share/applications/webapp-${CODENAME}.desktop" ]; then
+    cp -a "/usr/share/applications/webapp-${CODENAME}.desktop" "${USER_DESKTOP_FILE}"
+fi
+
+# Copie de l'icône pour WebApp Manager si non existante
+if [ ! -f "${USER_ICONS_DIR}/${CODENAME}.png" ] && [ -f "/usr/share/pixmaps/${CODENAME}.png" ]; then
+    cp -a "/usr/share/pixmaps/${CODENAME}.png" "${USER_ICONS_DIR}/${CODENAME}.png"
+fi

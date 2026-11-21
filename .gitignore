@@ -26,3 +26,6 @@ npm-debug.log
 !/test/jclic-demo/
 !/test/nodejs/
 
+# RPM build output
+/rpm/
+

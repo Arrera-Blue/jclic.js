@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>JClic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #2b2b2b;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    #app-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    #top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1e1e1e;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid #333;
+      user-select: none;
+    }
+    .top-bar-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-bar-title img {
+      width: 20px;
+      height: 20px;
+    }
+    .top-bar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn {
+      background: #3a3a3a;
+      color: #f0f0f0;
+      border: 1px solid #555;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+    .btn:hover {
+      background: #505050;
+    }
+    .btn-primary {
+      background: #2563eb;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    #player-area {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    #player-container {
+      width: 100%;
+      height: 100%;
+    }
+    #file-input {
+      display: none;
+    }
+  </style>
+  <script type="text/javascript" src="jclic.min.js"></script>
+</head>
+<body>
+  <div id="app-container">
+    <div id="top-bar">
+      <div class="top-bar-title">
+        <img src="icon-192.png" alt="JClic">
+        <span>JClic - Lecteur d'activités</span>
+      </div>
+      <div class="top-bar-actions">
+        <button class="btn" onclick="loadDefaultDemo()">Activités intégrées</button>
+        <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Ouvrir un projet (.jclic / .zip)</button>
+        <input type="file" id="file-input" accept=".jclic,.zip,.json" onchange="handleFileSelect(event)">
+        <a class="btn" href="https://clic.xtec.cat/repo/" target="_blank" rel="noopener">Bibliothèque en ligne</a>
+      </div>
+    </div>
+    <div id="player-area">
+      <div id="player-container"></div>
+    </div>
+  </div>
+
+  <script>
+    // Récupérer le paramètre de projet depuis l'URL ou utiliser la démo par défaut
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentProject = urlParams.get('project') || 'demo/demo.jclic.zip';
+
+    function startPlayer(projectPath) {
+      const container = document.getElementById('player-container');
+      container.innerHTML = '';
+      const jclicDiv = document.createElement('div');
+      jclicDiv.className = 'JClic';
+      jclicDiv.style.width = '100%';
+      jclicDiv.style.height = '100%';
+      jclicDiv.setAttribute('data-project', projectPath);
+      jclicDiv.setAttribute('data-options', JSON.stringify({
+        logLevel: 'warn',
+        skin: '@orange.xml'
+      }));
+      container.appendChild(jclicDiv);
+
+      if (window.JClicObject && typeof window.JClicObject.loadProject === 'function') {
+        window.JClicObject.loadProject(jclicDiv, projectPath, {
+          logLevel: 'warn',
+          skin: '@orange.xml'
+        });
+      }
+    }
+
+    function loadDefaultDemo() {
+      startPlayer('demo/demo.jclic.zip');
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const fileUrl = URL.createObjectURL(file);
+      startPlayer(fileUrl);
+    }
+
+    // Initialisation au chargement de la page
+    window.addEventListener('DOMContentLoaded', () => {
+      startPlayer(currentProject);
+    });
+  </script>
+</body>
+</html>

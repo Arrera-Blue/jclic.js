@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Name=JClic
+Comment=Lecteur d'activités éducatives multimédias JClic
+Exec=jclic %u
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=jclic
+Categories=GTK;Education;
+MimeType=application/x-jclic;application/x-jclic+zip;text/html;text/xml;application/xhtml_xml;
+StartupWMClass=WebApp-jclic
+StartupNotify=true
+X-WebApp-Browser=Firefox
+X-WebApp-URL=file:///usr/share/jclic/index.html
+X-WebApp-Isolated=true
